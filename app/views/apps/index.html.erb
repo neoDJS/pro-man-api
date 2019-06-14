@@ -1,0 +1,10 @@
+<p id="notice"><%= notice %></p>
+
+<h1>User Registered Applications</h1>
+<br>
+
+<ul>
+  <% @apps.each do |a| %>
+    <li><strong><%= a.name %></strong></li>
+  <% end %>
+</ul>

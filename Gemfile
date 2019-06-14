@@ -18,9 +18,13 @@ gem 'bcrypt', '~> 3.1.7'
 
 gem 'devise', '~> 4.2'
 
-gem 'omniauth'
-gem 'omniauth-facebook'
+# gem 'omniauth'
+# gem 'omniauth-facebook'
+# gem 'omniauth-google'
+# gem 'omniauth-twitter'
 gem 'dotenv-rails'
+gem 'active_model_serializers'
+gem 'foreman'
 
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'

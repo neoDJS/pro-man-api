@@ -1,0 +1,7 @@
+<%= form_tag ({controller: 'sessions', action: 'create', method: 'post'}) do %>
+  <input type='text' name='name'>
+  <input type='password' name='password'>
+  <input type='submit' value='login'>
+<% end %>
+<p>login with <%= link_to "Facebook", "/auth/facebook" %> </p>
+<p>Need an account ? <%= link_to "Sign up", new_user_path %></p>
