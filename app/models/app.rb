@@ -1,6 +1,7 @@
 class App < ApplicationRecord
     belongs_to :user
-    after_initialize :set_token
+    has_many :sessions
+    before_validation :set_token, on: :create
     #, class_name: "Admin", foreign_key: 'user_id' #:user, -> { where admin: true }, dependent: :destroy
 
     def self.current_app

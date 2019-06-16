@@ -1,41 +1,64 @@
 class Api::V1::ApplicationController < ActionController::API
-    protect_from_forgery with: :exception
-    before_filter :parse_request, :authenticate_app_from_token!
-    before_action :current_user
+    # protect_from_forgery with: :exception
+    before_action :parse_request, :authenticate_app_from_token!, :authenticate_user_from_token!
     before_action :set_action_user, only: [:create, :update]
-    helper_method :logged_in?
+    after_action :update_session
 
-    def current_user
-        @user = (User.find_by(id: session[:user_id]) || User.new)
+    def current_user_s
+        user = (@session.user || User.new)
+    end
+
+    def current_app
+      app = ((@session.app || @app) || App.new)
     end
 
     def logged_in?
-        current_user.id != nil
+      current_user_s.id != nil
     end
 
     def require_logged_in
-        return redirect_to(controller: 'sessions', action: 'new') unless logged_in?
+        render nothing: true, status: :unauthorized unless logged_in?
     end
 
     def set_action_user
-        current_user.set_current_user
+        current_app.set_current_app
+        current_user_s.set_current_user
+    end
+
+    def update_session
+      @session.update(activity: "")
     end
 
     private
-       def authenticate_app_from_token!
-         if !@json['api_token']
-           render nothing: true, status: :unauthorized
-         else
-           @app = nil
-           App.find_each do |app|
-             if Devise.secure_compare(app.api_token, @json['api_token'])
-               @app = app
-             end
-           end
-         end
-       end
+      def authenticate_app_from_token!
+        # @json = @json['body']
+        if !@header['HTTP_CLIENT_ID'] && !@header['HTTP_CLIENT_SECRET']
+          render nothing: true, status: :unauthorized
+        else
+          App.find_each do |app|
+            if Devise.secure_compare(app.key, @header['HTTP_CLIENT_ID']) && Devise.secure_compare(app.secret, @header['HTTP_CLIENT_SECRET'])
+              @app = app
+            end
+          end
+        end
+      end
 
-       def parse_request
-         @json = JSON.parse(request.body.read)
-       end
+      def authenticate_user_from_token!
+        # @json = @json['headers']
+        if !@header['HTTP_TOKEN']
+          render nothing: true, status: :unauthorized
+        else
+          puts Session.all.inspect
+          Session.all.each do |sess|
+            if Devise.secure_compare(sess.api_token, @header['HTTP_TOKEN'])
+              @session = sess
+            end
+          end
+        end
+      end
+
+      def parse_request
+        # @json = JSON.parse(params.to_json) # JSON.parse(request.body.read)
+        @header = request.headers
+      end
 end

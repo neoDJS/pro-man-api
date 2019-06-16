@@ -1,6 +1,7 @@
 class Api::V1::UsersController < Api::V1::ApplicationController
   before_action :require_logged_in, only:[:show, :edit, :update]
-  skip_before_action :set_action_user, only: [:create]
+  skip_before_action :authenticate_app_from_token!, only: [:index, :show, :update]
+  skip_before_action :set_action_user, :authenticate_user_from_token!, only: [:create]
 
   def index
     @users = User.all

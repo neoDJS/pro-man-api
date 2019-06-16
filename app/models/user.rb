@@ -15,6 +15,7 @@ class User < ApplicationRecord
     has_many :updated_workers, class_name: "Worker", foreign_key: "updated_by_id"
     scope :admins, -> { where(admin: true) }
     has_many :apps
+    has_many :sessions
 
     def self.current_user
         @@current_user
@@ -24,10 +25,19 @@ class User < ApplicationRecord
         @@current_user = self
     end
 
-    def get_token(app)
+    def get_session(app)
         tokenPad = self.name + app.name + DateTime.now.to_s
         sha256 = Digest::SHA2.new(256)
-        api_token = sha256.hexdigest(tokenPad)
+        self.set_current_user
+        app.set_current_app
+        self.sessions.build(api_token: sha256.hexdigest(tokenPad), app: app).save!
+        self.sessions.last
+    end
+    # u.attributes.merge({api_token: u.get_token(a)})
+    # 1.day.from_now
+
+    def check_session(token)
+      self.sessions.find{|s| s.api_token == token}
     end
   
     def slug

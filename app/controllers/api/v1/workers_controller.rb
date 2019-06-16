@@ -1,4 +1,5 @@
 class Api::V1::WorkersController < Api::V1::ApplicationController
+    skip_before_action :authenticate_app_from_token!
     before_action :require_logged_in
     before_action :set_worker, only:[:show, :edit, :update]
 

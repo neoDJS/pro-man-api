@@ -1,4 +1,5 @@
 class Api::V1::TodosController < Api::V1::ApplicationController
+    skip_before_action :authenticate_app_from_token!
     before_action :require_logged_in
     before_action :set_project
     before_action :set_todo, only:[:show, :edit, :update, :addWorker, :affectation]

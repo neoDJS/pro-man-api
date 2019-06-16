@@ -1,37 +1,29 @@
 class Api::V1::SessionsController < Api::V1::ApplicationController
-  skip_before_action :set_action_user
+  skip_before_action :set_action_user, :authenticate_user_from_token!, only: [:create]
+  skip_before_action :authenticate_app_from_token!, only: [:destroy]
+  skip_after_action :update_session
 
   def create
-    if auth
-      @user = User.find_or_create_by(uid: auth['uid']) do |u|
-        u.name = auth['info']['name']
-        u.email = auth['info']['email']
-        sha256 = Digest::SHA2.new(256)
-        u.password = sha256.hexdigest(u.name)
-        # u.image = auth['info']['image']
-      end
+    user = User.find_by(email: params[:user][:email])
+    # render json: @user.errors, status: :unprocessable_entity unless @user && @user.authenticate(params[:user][:password])
+    
+    if user && user.authenticate(params[:user][:password])
+      # session[:user_id] = @user.id
+      sessionn = user.get_session(@app)
+      render json: sessionn, status: :created
     else
-      @user = User.find_by(name: params[:user][:name])
-      render json: @user.errors, status: :unprocessable_entity unless @user.authenticate(params[:user][:password])
-    end
-
-    if @user
-      # @user.set_current_user
-      session[:user_id] = @user.id
-      render json: @user, status: :created
-    else
-        render json: @user.errors, status: :unprocessable_entity
+        render json: user.errors, stjatus: :unprocessable_entity
     end
   end
 
   def destroy
-    session.delete :user_id
-    redirect_to '/'
+    @session.delete
+    # redirect_to '/'
   end
 
   private
 
-    def auth
-      request.env['omniauth.auth']
-    end
+    # def auth
+    #   request.env['omniauth.auth']
+    # end
 end
