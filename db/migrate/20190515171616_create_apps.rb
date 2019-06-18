@@ -4,6 +4,7 @@ class CreateApps < ActiveRecord::Migration[5.2]
       t.string :name
       t.string :key
       t.string :secret
+      t.boolean :wired, default: false
       t.belongs_to :user
       
       t.belongs_to :created_by, references: :users

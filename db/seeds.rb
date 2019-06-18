@@ -6,9 +6,14 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-u = User.new(name: "test", email: "test@tester.com", password: "test").set_current_user
+u = User.new(name: "Admin", email: "admin@proman.com", password: "admin").set_current_user
 u.apps.build({name: "seed"}).set_current_app
+u.apps.build({name: "pro-man cli"})
+u.apps.build({name: "pro-man JS cli"})
+u.apps.build({name: "react pro-man cli"})
 u.save
+u1 = User.create(name: "test", email: "test@tester.com", password: "test")
+u1.save
 # u.set_current_user
 w = Worker.create(title: "Admin", user_id: u.id)
 # u.worker = w

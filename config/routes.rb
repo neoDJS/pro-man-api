@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       end
       resources :workers, only: [:index, :create, :update, :show, :destroy]
 
+      post '/connect' => 'sessions#connect'
       # get '/login' => 'sessions#new'
       post '/login' => 'sessions#create'
       post '/logout' => 'sessions#destroy'

@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 2019_06_14_074457) do
     t.string "name"
     t.string "key"
     t.string "secret"
+    t.boolean "wired", default: false
     t.integer "user_id"
     t.integer "created_by_id"
     t.integer "updated_by_id"

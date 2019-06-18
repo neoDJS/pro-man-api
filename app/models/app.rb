@@ -12,6 +12,18 @@ class App < ApplicationRecord
         @@current_app = self
     end
 
+    def wired?
+        self.wired
+    end
+
+    def set_wired
+        user.set_current_user
+        self.set_current_app
+        # self.toggle!(:wired)
+        self.wired = true
+        self.save!
+    end
+
     def uuid
         DateTime.now.to_s.gsub(/[-:]/, "")[0..14].chars.map{|a| rand(10).to_s}.join 
     end
