@@ -16,7 +16,7 @@ gem 'puma', '~> 3.11'
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
 
-gem 'devise', '~> 4.2'
+gem 'devise', '~> 4.7'
 
 # gem 'omniauth'
 # gem 'omniauth-facebook'
